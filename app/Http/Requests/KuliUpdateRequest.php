@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserUpdateRequest extends FormRequest
+class KuliUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,14 +19,14 @@ class UserUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name'                  => 'required|max:100|unique:users,name,' . $this->user->id,
-            'identity_card_number'  => 'nullable|max:100|unique:users,identity_card_number,' . $this->user->id,
+            'name'                  => 'required|max:100|unique:users,name,' . $this->kuli->id,
+            'identity_card_number'  => 'nullable|max:100|unique:users,identity_card_number,' . $this->kuli->id,
             'gender'                => 'nullable',
-            'email'                 => 'email|unique:users,email,' . $this->user->id,
-            'phone'                 => 'nullable|numeric|unique:users,phone,' . $this->user->id,
+            'email'                 => 'email|unique:users,email,' . $this->kuli->id,
+            'phone'                 => 'nullable|numeric|unique:users,phone,' . $this->kuli->id,
             'address'               => 'nullable',
             'npwp'                  => 'nullable',
             'rekening'              => 'nullable',

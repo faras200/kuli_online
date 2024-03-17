@@ -86,12 +86,12 @@
         <nav class="mt-2 mb-5">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('home.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-globe"></i>
                         <p>Homepage</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard.index') }}"
                         class="nav-link {{ request()->segment(2) == 'dashboard' ? 'active' : '' }}">

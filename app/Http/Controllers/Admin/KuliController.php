@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
@@ -8,26 +9,26 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Laravolt\Indonesia\Models\City;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\KuliUpdateRequest;
 use Illuminate\Support\Facades\Hash;
 use Laravolt\Indonesia\Models\Village;
 use App\Http\Requests\UserStoreRequest;
 use Illuminate\Support\Facades\Storage;
 use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Province;
-use App\Http\Requests\UserUpdateRequest;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 
-class UserController extends Controller
+class KuliController extends Controller
 {
     protected $module;
 
     public function __construct()
     {
-        $this->module = 'Users';
+        $this->module = 'Kuli';
         $this->middleware([
-            'role:admin',
-            'permission:index admin/users|create admin/users/create|store admin/users/store|edit admin/users/edit|update admin/users/update|delete admin/users/delete|show admin/users/show'
+            'role:author|admin',
+            'permission:index admin/kuli|create admin/kuli/create|store admin/kuli/store|edit admin/kuli/edit|update admin/kuli/update|delete admin/kuli/delete|show admin/kuli/show'
         ]);
     }
 
@@ -37,8 +38,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::with('roles')->get();
-
+            $data = User::whereHas('roles', function ($query) {
+                $query->where('name', 'kuli');
+            });
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('DT_RowIndex', function ($row) {
@@ -49,10 +51,10 @@ class UserController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '
-                    <form action="' . route('users.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
+                    <form action="' . route('kuli.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
                         ' . method_field('DELETE') . csrf_field() . '
                         <div class="btn-group">
-                            <a href="' . route('users.edit', $row->id) . '" class="btn btn-warning">
+                            <a href="' . route('kuli.edit', $row->id) . '" class="btn btn-warning">
                                 <i class="fa fa-pencil-alt"></i>
                             </a>
                             <button type="submit" class="btn btn-danger" title="Delete">
@@ -67,10 +69,10 @@ class UserController extends Controller
         }
 
         $data = [
-            'page_title'    => 'User',
+            'page_title'    => 'Kuli',
         ];
 
-        return view('backend.user.index', $data);
+        return view('backend.kuli.index', $data);
     }
 
     /**
@@ -84,7 +86,7 @@ class UserController extends Controller
             'provinces'     => Province::orderBy('name')->get(),
         ];
 
-        return view('backend.user.create', $data);
+        return view('backend.kuli.create', $data);
     }
 
     /**
@@ -115,34 +117,35 @@ class UserController extends Controller
             $user->syncRoles($roles);
         }
 
+
         Alert::success('Success', $this->module . ' added successfully.');
-        return redirect()->route('users.index');
+        return redirect()->route('kuli.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(User $kuli)
     {
-        return $user;
+
         $data = [
             'page_title'    => 'Edit Data ' . $this->module,
-            'users'         => $user,
-            'userRole'      => $user->roles->pluck('name')->toArray(),
+            'users'         => $kuli,
+            'userRole'      => $kuli->roles->pluck('name')->toArray(),
             'roles'         => Role::orderBy('name')->get(),
             'provinces'     => Province::orderBy('name')->get(),
-            'cities'        => City::where('province_code', $user->province_id)->orderBy('name')->get(),
-            'districts'     => District::where('city_code', $user->city_id)->orderBy('name')->get(),
-            'villages'      => Village::where('district_code', $user->district_id)->orderBy('name')->get(),
+            'cities'        => City::where('province_code', $kuli->province_id)->orderBy('name')->get(),
+            'districts'     => District::where('city_code', $kuli->city_id)->orderBy('name')->get(),
+            'villages'      => Village::where('district_code', $kuli->district_id)->orderBy('name')->get(),
         ];
 
-        return view('backend.user.edit', $data);
+        return view('backend.kuli.edit', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(KuliUpdateRequest $request, User $kuli)
     {
         $data                = $request->validated();
         $data['updated_by']  = auth()->id();
@@ -156,8 +159,8 @@ class UserController extends Controller
 
         if ($request->hasFile('profile_image')) {
             // Menghapus file lama jika ada
-            if ($user->profile_image) {
-                Storage::disk('public')->delete('images/users/' . $user->profile_image);
+            if ($kuli->profile_image) {
+                Storage::disk('public')->delete('images/users/' . $kuli->profile_image);
             }
 
             // Menyimpan file baru
@@ -167,15 +170,15 @@ class UserController extends Controller
             $data['profile_image'] = $profile_imageName;
         }
 
-        $user->update($data);
+        $kuli->update($data);
 
         if ($request->filled('role_id')) {
             $roles = Role::whereIn('id', $request->role_id)->get();
-            $user->syncRoles($roles);
+            $kuli->syncRoles($roles);
         }
 
         Alert::success('Success', $this->module . ' updated successfully.');
-        return redirect()->route('users.index');
+        return redirect()->route('kuli.index');
     }
 
     public function show()
@@ -195,23 +198,23 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $kuli)
     {
-        if (!$user) {
+        if (!$kuli) {
             return back()->with('error', $this->module . ' not found.');
         }
 
         // Mengambil foto profil yang ada sebelumnya
-        $profileImage = $user->profile_image;
+        $profileImage = $kuli->profile_image;
 
         // Menghapus foto profil yang ada sebelumnya
         if ($profileImage) {
             Storage::disk('public')->delete('images/users/' . $profileImage);
         }
 
-        $user->delete();
+        $kuli->delete();
 
         Alert::success('Success', $this->module . ' deleted successfully.');
-        return redirect()->route('users.index');
+        return redirect()->route('kuli.index');
     }
 }

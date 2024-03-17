@@ -18,11 +18,13 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'name'                  => 'required|max:100',
-            'identity_card_number'  => 'required|max:16|unique:users',
-            'email'                 => 'email|unique:users',
+            'identity_card_number'  => 'nullable|max:16|unique:users',
+            'email'                 => 'email',
             'gender'                => 'required',
-            'phone'                 => 'required|numeric|unique:users',
-            'address'               => 'required',
+            'phone'                 => 'required|numeric',
+            'rekening'              => 'nullable|numeric',
+            'npwp'                  => 'nullable|numeric',
+            'address'               => 'nullable',
             'province_id'           => 'nullable',
             'city_id'               => 'nullable',
             'district_id'           => 'nullable',
@@ -31,7 +33,7 @@ class UserStoreRequest extends FormRequest
             'rw'                    => 'nullable|numeric',
             'postcode'              => 'nullable|numeric',
             'profile_image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Batasan file gambar
-            'password'              => 'required|min:8',
+            'password'              => 'nullable|min:8',
         ];
     }
 

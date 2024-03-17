@@ -41,7 +41,7 @@
             </form>
 
             @if (Auth::check())
-                @if (auth()->user()->hasRole('author'))
+                @if (auth()->user()->hasRole('kuli'))
                     <div class="dropdown text-end">
                         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -70,7 +70,7 @@
                             </form>
                         </ul>
                     </div>
-                @elseif(auth()->user()->hasRole('admin'))
+                @elseif(auth()->user()->hasRole('admin', 'author'))
                     <div class="text-end">
                         <a href="{{ route('dashboard.index') }}" class="btn btn-primary me-2">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
