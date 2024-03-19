@@ -42,14 +42,15 @@
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</button>
+                            <button type="submit" class="btn btn-primary btn-block"><i
+                                    class="fa-solid fa-arrow-right-to-bracket"></i> Login</button>
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
 
                 <p class="mb-1">
-                    <a href="{{ url('forgot-password') }}">Forgot password</a>
+                    {{-- <a href="{{ url('forgot-password') }}">Forgot password</a> --}}
                 </p>
             </div>
             <!-- /.card-body -->

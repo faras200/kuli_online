@@ -29,7 +29,7 @@
                         <th>Phone</th>
                         <th>NIK</th>
                         <th>NPWP</th>
-                        <th>Role</th>
+                        <th>Rekening</th>
                         <th>Aksi</th>
                     </thead>
                     <tbody></tbody>
@@ -76,8 +76,8 @@
                         name: 'npwp'
                     },
                     {
-                        data: 'roles',
-                        name: 'roles'
+                        data: 'rekening',
+                        name: 'rekening'
                     },
                     {
                         data: 'action',

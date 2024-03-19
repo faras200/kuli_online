@@ -6,17 +6,17 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\Admin\TagController;
 
+use App\Http\Controllers\Admin\KuliController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ImageUploadController;
-use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\KuliController;
 use App\Http\Controllers\Admin\NavigationController;
-
 use App\Http\Controllers\Admin\PermissionController;
+
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Author\PostController as AuthorPostController;
 use App\Http\Controllers\Author\DashboardController as AuthorDashboardController;
@@ -41,7 +41,10 @@ Route::middleware(['auth', 'role:admin|author'])->prefix('admin')->group(functio
     Route::resource('categories', CategoryController::class);
     Route::resource('tags', TagController::class);
     Route::resource('profile', ProfileController::class)->only(['edit', 'update']);
-    Route::resource('transactions', TransactionController::class);
+    Route::resource('transactions', TransactionController::class)->except(['show', 'update']);
+    Route::get('transactions/print-excel', [TransactionController::class, 'export'])->name('transactions.export');
+    Route::get('transactions/show', [TransactionController::class, 'show'])->name('transactions.show');
+    Route::post('transactions/update', [TransactionController::class, 'update'])->name('transactions.update');
     Route::resource('kuli', KuliController::class);
 
     Route::prefix('configuration')->group(function () {

@@ -12,7 +12,10 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    <!-- Loading style -->
+    <link rel="stylesheet" href="{{ asset('assets/template/backend/dist/css/loading.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/template/backend/dist/css/adminlte.min.css') }}">
     <!-- SweetAlert -->
@@ -21,6 +24,7 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="loading" style="display: none;">Loading&#8230;</div>
     <div class="wrapper">
         @include('layouts.navigation')
 
