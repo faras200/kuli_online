@@ -12,21 +12,7 @@
         @method('PUT')
 
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <ul class="nav nav-pills ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#biodata" data-toggle="tab"><i class="far fa-id-card"></i>
-                                Biodata</a>
-                        </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link" href="#login" data-toggle="tab"><i class="fas fa-key"></i> Login</a>
-                        </li> --}}
-                    </ul>
-                </h3>
-                <div class="card-tools">
-                </div>
-            </div><!-- /.card-header -->
+            
 
             <div class="card-body">
                 <div class="tab-content p-0">
@@ -40,7 +26,7 @@
                                         value="{{ old('name', $users->name) }}" required>
                                 </div>
                             </div>
-                            <div class="col col-12 col-lg-4">
+                            <!-- <div class="col col-12 col-lg-4">
                                 <div class="form-group">
                                     <label for="phone">No. HP</label>
                                     <input type="number" class="form-control" name="phone" id="phone"
@@ -53,7 +39,7 @@
                                     <input type="number" class="form-control" name="rekening" id="rekening"
                                         value="{{ old('rekening', $users->rekening) }}">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col col-12 col-lg-4">
                                 <div class="form-group">
                                     <label for="identity_card_number">NIK</label>
@@ -80,10 +66,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="address">Alamat</label>
                             <textarea type="address" class="form-control" name="address" id="address" rows="2">{{ old('address', $users->address) }}</textarea>
-                        </div>
+                        </div> -->
                         <!-- <div class="row">
                             <div class="col col-6 col-lg-3">
                                 <div class="form-group">

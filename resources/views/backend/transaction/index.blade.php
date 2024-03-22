@@ -1,5 +1,18 @@
 @extends('layouts.app')
 
+<style type="text/css">
+    .btn {
+
+        padding: 0.1rem 0.5rem;
+    }
+
+    #dataTable td, #dataTable th {
+    padding: 0.4rem;
+}
+
+
+</style>
+
 @section('content')
     @if ($message = Session::get('message'))
         <div class="alert alert-success">
@@ -45,7 +58,7 @@
 
             <div class="row">
                 <div class="col-12 d-flex justify-content-between">
-                    <div class="col-6 d-flex align-items-center">
+                    <div class="col-8 d-flex align-items-center">
                         <button onclick="Tambah()" type="button" class="btn btn-primary mr-2">
                             <i class="fa fa-plus"></i>
                             Add Data
@@ -56,23 +69,14 @@
                         </button>
 
                     </div>
-                    <div class="col-6 d-flex justify-content-between">
-                        <div class="col-4">
-                            <label>Filter Kuli</label>
-                            <div style="font-size: 17px;">
-                                <select class="form-control" id="filterkuli">
-                                    <option value="all">Semua Kuli</option>
-                                    @foreach ($kuli as $sal)
-                                        <option value="{{ $sal->id }}">{{ $sal->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-4">
+                    <div class="col-4 d-flex justify-content-between">
+                        
+                        <div class="col-6">
                             <label>Dari Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnawal }}" id="dari">
+                            <input type="hidden" id="filterkuli" value="all">
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <label>Sampai Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnakhir }}" id="sampai">
                         </div>
@@ -87,16 +91,28 @@
             <div class="table-responsive">
                 <table id="dataTable" class="table table-striped table-bordered">
                     <thead class="table-dark">
-                        <th>No.</th>
-                        <th>Tanggal</th>
-                        <th>Total Upah</th>
-                        <th>Kategori Kuli</th>
-                        <th>Aksi</th>
+                        <tr>
+                            <th>No.</th>
+                            <th>Tanggal</th>
+                            <th>Total Upah</th>
+                            <th>Kategori Kuli</th>
+                            <th>Aksi</th>
+                        </tr>
                     </thead>
+                    <tfoot class="table-dark">
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th id="totalSalaryFooter"></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                     <tbody></tbody>
                 </table>
             </div>
         </div>
+
         <!-- /.card-body -->
     </div>
 
@@ -123,10 +139,27 @@
                                     </select>
                                 </div>
                                 <hr>
+                                <label>Tanggal</label>
+                                <br>
+                                <input type="date" id="tanggal" required class="form-control">
+                                <hr>
+                                <label>Upah</label>
+                                <br>
+                                <input type="upah" id="upah" required class="form-control">
+                                <hr>
                                 <label>Nama Kuli</label>
                                 <br>
+                                <div class="row mb-3">
+                                    <div class="col-md-9">
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div id="contcheck" style="font-size: 18px;font-weight:bold;">0</div>
+                                        <div style="font-size: 11px;">Kuli Yang Dipilih</div>
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
-                                    <table id="dataTable" class="table table-striped header-fixed">
+                                    <table id="dataTable2" class="table table-striped header-fixed">
                                         <thead class="table-dark">
                                             <tr>
                                                 <th style="width: 30%">#</th>
@@ -137,9 +170,7 @@
                                         <tbody>
                                             @foreach ($kuli as $sal)
                                                 <tr>
-                                                    <td style="width: 30%"><input type="checkbox" name="kuli"
-                                                            value="{{ $sal->id }}">
-                                                    </td>
+                                                    <td style="width: 30%"><input type="checkbox" class="kuliCheckbox" name="kuli" value="{{ $sal->id }}"></td>
                                                     <td style="width: 70%">{{ $sal->name }}</td>
                                                 </tr>
                                             @endforeach
@@ -147,14 +178,7 @@
                                     </table>
                                 </div>
                                 <hr>
-                                <label>Tanggal</label>
-                                <br>
-                                <input type="date" id="tanggal" required class="form-control">
-                                <hr>
-                                <label>Upah</label>
-                                <br>
-                                <input type="upah" id="upah" required class="form-control">
-                                <hr>
+                                
                             </div>
                         </div>
                     </div>
@@ -337,76 +361,118 @@
     <script type="text/javascript" src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            table = $('#dataTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '{{ route('transactions.index') }}',
-                    data: function(d) {
-                        d.kuli = $('#filterkuli').val();
-                        d.dari = $('#dari').val();
-                        d.sampai = $('#sampai').val();
-                    },
-                },
-                columnDefs: [{
-                    "targets": [2],
-                    "render": $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
-                }, ],
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'tanggal',
-                        name: 'tanggal'
-                    },
-                    {
-                        data: 'total_salary',
-                        name: 'total_salary'
-                    },
-                    {
-                        data: 'category',
-                        name: 'category'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center'
-                    },
-                ],
-                aaSorting: [
-                    [0, 'desc']
-                ],
-                oLanguage: {
-                    "sEmptyTable": "Belum ada data",
-                    "sProcessing": "Sedang memproses...",
-                    "sLengthMenu": "Tampilkan _MENU_ data",
-                    "sZeroRecords": "Tidak ditemukan data yang sesuai",
-                    "sInfo": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                    "sInfoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
-                    "sInfoFiltered": "(disaring dari total _MAX_ data)",
-                    "sSearch": "Cari:",
-                    "oPaginate": {
-                        "sFirst": "Pertama",
-                        "sPrevious": "Sebelumnya",
-                        "sNext": "Selanjutnya",
-                        "sLast": "Terakhir"
-                    }
-                },
-                lengthMenu: [
-                    [10, 25, 50, 100, 500, 1000, -1],
-                    [10, 25, 50, 100, 500, 1000, "Semua"]
-                ],
-            });
+$(document).ready(function() {
+    $('#searchInput').on('keyup', function() {
+        var searchText = $(this).val().toLowerCase();
+        $('#dataTable2 tbody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1)
         });
+    });
 
-        function reload_table() {
-            table.ajax.reload(null, false); //reload datatable ajax
+    $('.kuliCheckbox').on('change', function() {
+        var countChecked = $('input.kuliCheckbox:checked').length;
+        
+        $('#contcheck').html(countChecked)
+    });
+});
+
+$(document).ready(function() {
+    var table = $('#dataTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '{{ route('transactions.index') }}',
+            data: function(d) {
+                d.kuli = $('#filterkuli').val();
+                d.dari = $('#dari').val();
+                d.sampai = $('#sampai').val();
+            }
+        },
+        columnDefs: [{
+            "targets": [2],
+            "render": $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
+        }],
+        columns: [{
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                className: 'text-center'
+            },
+            {
+                data: 'tanggal',
+                name: 'tanggal'
+            },
+            {
+                data: 'total_salary',
+                name: 'total_salary'
+            },
+            {
+                data: 'category',
+                name: 'category'
+            },
+            {
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false,
+                className: 'text-center'
+            },
+        ],
+        aaSorting: [
+            [0, 'desc']
+        ],
+        oLanguage: {
+            "sEmptyTable": "Belum ada data",
+            "sProcessing": "Sedang memproses...",
+            "sLengthMenu": "Tampilkan _MENU_ data",
+            "sZeroRecords": "Tidak ditemukan data yang sesuai",
+            "sInfo": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            "sInfoEmpty": "Menampilkan 0 sampai 0 dari 0 data",
+            "sInfoFiltered": "(disaring dari total _MAX_ data)",
+            "sSearch": "Cari:",
+            "oPaginate": {
+                "sFirst": "Pertama",
+                "sPrevious": "Sebelumnya",
+                "sNext": "Selanjutnya",
+                "sLast": "Terakhir"
+            }
+        },
+        lengthMenu: [
+            [10, 25, 50, 100, 500, 1000, -1],
+            [10, 25, 50, 100, 500, 1000, "Semua"]
+        ],
+        footerCallback: function(row, data, start, end, display) {
+            var api = this.api(),
+                data;
+
+            // Remove the formatting to get integer data for summation
+            var intVal = function(i) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                    i : 0;
+            };
+
+            // Total over all pages
+            total = api
+                .column(2)
+                .data()
+                .reduce(function(a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+            // Update footer
+            $('#totalSalaryFooter').html(
+                'Rp. ' + total.toLocaleString('id-ID')
+            );
         }
+    });
+});
+
+
+
+    function reload_table() {
+        table.ajax.reload(null, false); //reload datatable ajax
+    }
     </script>
 
     <script type="text/javascript">
@@ -414,10 +480,7 @@
             $('#editkuli').empty();
         });
 
-        $('#filterkuli').select2({
-            theme: 'bootstrap4',
-            placeholder: "-- Pilih Kuli --",
-        });
+        
 
         $('#kuli').select2({
             theme: 'bootstrap4',
