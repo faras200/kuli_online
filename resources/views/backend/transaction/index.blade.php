@@ -6,6 +6,39 @@
             {{ $message }}
         </div>
     @endif
+    <style>
+        .header-fixed {
+            width: 100%
+        }
+
+        .header-fixed>thead,
+        .header-fixed>tbody,
+        .header-fixed>thead>tr,
+        .header-fixed>tbody>tr,
+        .header-fixed>thead>tr>th,
+        .header-fixed>tbody>tr>td {
+            display: block;
+        }
+
+        .header-fixed>tbody>tr:after,
+        .header-fixed>thead>tr:after {
+            content: ' ';
+            display: block;
+            visibility: hidden;
+            clear: both;
+        }
+
+        .header-fixed>tbody {
+            overflow-y: auto;
+            height: 250px;
+        }
+
+        .header-fixed>tbody>tr>td,
+        .header-fixed>thead>tr>th {
+
+            float: left;
+        }
+    </style>
 
     <div class="card">
         <div class="card-header">
@@ -56,9 +89,8 @@
                     <thead class="table-dark">
                         <th>No.</th>
                         <th>Tanggal</th>
-                        <th>Name</th>
-                        <th>Upah</th>
-                        <th>Deskripsi</th>
+                        <th>Total Upah</th>
+                        <th>Kategori Kuli</th>
                         <th>Aksi</th>
                     </thead>
                     <tbody></tbody>
@@ -81,29 +113,48 @@
                     <div class="modal-body" style="padding-bottom: 0px;padding-top: 0px;">
                         <div class="row">
                             <div class="col-12">
-                                <label>Nama Kuli</label>
-                                <br>
+                                <label>Kategori Kuli</label>
                                 <div style="font-size: 17px;">
-                                    <select class="form-control" required id="kuli">
-                                        <option value="">Pilih Kuli</option>
-                                        @foreach ($kuli as $sal)
-                                            <option value="{{ $sal->id }}">{{ $sal->name }}</option>
-                                        @endforeach
+                                    <select class="form-control" id="categorykuli">
+                                        <option value="beras">Kuli Beras</option>
+                                        <option value="padi">Kuli Padi</option>
+                                        <option value="pelet">Kuli Pelet</option>
+                                        <option value="sekam">Kuli Sekam</option>
                                     </select>
                                 </div>
                                 <hr>
-                                <label>Upah</label>
+                                <label>Nama Kuli</label>
                                 <br>
-                                <input type="upah" id="upah" required class="form-control">
+                                <div class="table-responsive">
+                                    <table id="dataTable" class="table table-striped header-fixed">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th style="width: 30%">#</th>
+                                                <th style=" width: 70%;">Name</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($kuli as $sal)
+                                                <tr>
+                                                    <td style="width: 30%"><input type="checkbox" name="kuli"
+                                                            value="{{ $sal->id }}">
+                                                    </td>
+                                                    <td style="width: 70%">{{ $sal->name }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <hr>
                                 <label>Tanggal</label>
                                 <br>
                                 <input type="date" id="tanggal" required class="form-control">
                                 <hr>
-                                <label>Deskripsi (optional)</label>
-                                <textarea rows="4" class="form-control" value="" style="font-size: 14px;" id="deskripsi"></textarea>
+                                <label>Upah</label>
+                                <br>
+                                <input type="upah" id="upah" required class="form-control">
                                 <hr>
-
                             </div>
                         </div>
                     </div>
@@ -144,11 +195,97 @@
                         <div class="row">
                             <div class="col-12">
                                 <input type="hidden" id="editid" value="" class="form-control">
-                                <label>Nama Kuli</label>
+                                <div class="table-responsive">
+                                    <table id="dataTable" class="table table-striped header-fixed">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th style="width: 30%">#</th>
+                                                <th style=" width: 70%;">Name</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($kuli as $sal)
+                                                <tr>
+                                                    <td style="width: 30%"><input type="checkbox" name="kuli"
+                                                            value="{{ $sal->id }}">
+                                                    </td>
+                                                    <td style="width: 70%">{{ $sal->name }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr>
+                                <label>Upah</label>
                                 <br>
-                                <div style="font-size: 17px;">
-                                    <select class="form-control" required id="editkuli">
-                                    </select>
+                                <input type="text" id="editupah" value="" required class="form-control">
+                                <hr>
+                                <label>Tanggal</label>
+                                <br>
+                                <input type="date" id="edittanggal" value="" required class="form-control">
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer tombolnya2">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <button type="button" class="btn btn-secondary btn-block ml-auto"
+                                        data-dismiss="modal">Tutup</button>
+                                </td>
+                                <td width="5%">
+                                    &nbsp;
+                                </td>
+                                <td>
+                                    <button type="button" onclick="Update();"
+                                        class="btn btn-primary btn-block btn-absen ml-auto menusxx">Simpan</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="show" tabindex="-1" role="dialog" aria-labelledby="modal-default"
+        aria-hidden="true">
+        <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modal-title-default">Detail Transaksi</h3>
+                    <hr>
+                </div>
+                <form id="formedit" action="">
+                    <div class="modal-body" style="padding-bottom: 0px;padding-top: 0px;">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="hidden" id="editid" value="" class="form-control">
+                                <div class="table-responsive">
+                                    <table id="dataTable" class="table table-striped header-fixed">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th style="width: 30%">#</th>
+                                                <th style=" width: 70%;">Name</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="contentnya">
+                                            @foreach ($kuli as $sal)
+                                                <tr>
+                                                    <td style="width: 30%"><input type="checkbox" name="kuli"
+                                                            value="{{ $sal->id }}">
+                                                    </td>
+                                                    <td style="width: 70%">{{ $sal->name }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <hr>
                                 <label>Upah</label>
@@ -213,7 +350,7 @@
                     },
                 },
                 columnDefs: [{
-                    "targets": [3],
+                    "targets": [2],
                     "render": $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
                 }, ],
                 columns: [{
@@ -226,16 +363,12 @@
                         name: 'tanggal'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'total_salary',
+                        name: 'total_salary'
                     },
                     {
-                        data: 'salary',
-                        name: 'salary'
-                    },
-                    {
-                        data: 'description',
-                        name: 'description'
+                        data: 'category',
+                        name: 'category'
                     },
                     {
                         data: 'action',
@@ -360,25 +493,30 @@
                 buttons: ["Cancel", "Yakin"],
             }).then((willDelete) => {
                 if (willDelete) {
-                    $('.loading').attr('style', 'display: block');
                     var rupiah = $('#upah').val();
-                    var kuli = $('#kuli').val();
 
-                    if (kuli == '') {
+                    var selectedKuli = new Array();
+                    $('input[name="kuli"]:checked').each(function() {
+                        selectedKuli.push(this.value);
+                    });
+                    console.log(selectedKuli);
+
+                    if (selectedKuli.length == 0) {
                         NotifWarning('Kuli Harus Di Pilih')
                         return 0;
                     }
 
+                    $('.loading').attr('style', 'display: block');
                     $('#new').modal('hide');
                     $.ajax({
                         type: 'POST',
                         url: "{{ route('transactions.store') }}",
                         data: {
                             '_token': $('meta[name="csrf-token"]').attr('content'),
-                            'kuli_id': kuli,
+                            'kuli': selectedKuli,
+                            'category': $('#categorykuli').val(),
                             'salary': parseInt(rupiah.replace(/Rp\.|\./g, '')),
                             'tanggal': $('#tanggal').val(),
-                            'description': $('#deskripsi').val(),
                         },
                         success: function(data) {
                             swal({

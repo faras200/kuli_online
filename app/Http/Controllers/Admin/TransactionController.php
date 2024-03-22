@@ -42,13 +42,17 @@ class TransactionController extends Controller
     {
         if ($request->ajax()) {
             $data = DB::table('transactions')
-                ->leftJoin('users', 'transactions.kuli_id', '=', 'users.id')
-                ->select('transactions.*', 'users.name as name')
+                ->select('transactions.*',)
                 ->whereBetween('transactions.tanggal', [$request->dari, $request->sampai]);
+            // $data = DB::table('transactions')
+            //     ->leftJoin('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
+            //     ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
+            //     ->select('transactions.*', 'transaction_details.*', 'users.name as name')
+            //     ->whereBetween('transactions.tanggal', [$request->dari, $request->sampai]);
 
-            if ($request->kuli != 'all') {
-                $data->where('transactions.kuli_id', $request->kuli);
-            }
+            // if ($request->kuli != 'all') {
+            //     $data->where('transactions.kuli_id', $request->kuli);
+            // }
 
             return Datatables::of($data->get())
                 ->addIndexColumn()
@@ -112,13 +116,23 @@ class TransactionController extends Controller
     {
         $data                = $request->all();
 
-        DB::table('transactions')->insert([
-            'kuli_id'       => $data['kuli_id'],
+        $transaction = DB::table('transactions')->insertGetId([
+            'category'      => $data['category'],
             'tanggal'       => $data['tanggal'],
-            'salary'        => $data['salary'],
-            'description'   => $data['description'],
+            'total_salary'        => $data['salary'],
             'created_at'    => now(),
         ]);
+        $total_kuli = count($data['kuli']);
+
+        foreach ($data['kuli'] as $kuli) {
+            $transaction_details = DB::table('transaction_details')->insertGetId([
+                'transaction_id' => $transaction,
+                'kuli_id' => $kuli,
+                'salary'        => $data['salary'] / $total_kuli,
+                'created_at'    => now(),
+            ]);
+        }
+
         Alert::success('Success', $this->module . ' created successfully.');
         return response()->json($data);
     }
@@ -164,7 +178,13 @@ class TransactionController extends Controller
 
     public function show(Request $request)
     {
-        $data = DB::table('transactions')->leftJoin('users', 'transactions.kuli_id', '=', 'users.id')->select('transactions.*', 'users.name as name')->where('transactions.id', $request->id)->first();
+        // $data = DB::table('transactions')->leftJoin('users', 'transactions.kuli_id', '=', 'users.id')->select('transactions.*', 'users.name as name')->where('transactions.id', $request->id)->first();
+        $data = DB::table('transactions')
+            ->leftJoin('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
+            ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
+            ->select('transactions.*', 'transaction_details.*', 'users.name as name')
+            ->where('transactions.id', $request->id)
+            ->get();
 
         return response()->json($data);
     }
