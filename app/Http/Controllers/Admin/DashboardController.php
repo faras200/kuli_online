@@ -40,7 +40,7 @@ class DashboardController extends Controller
 
         // return $data_date[array_key_first($data_date)];
         $date10 = Carbon::today()->subDays(30)->tz('Asia/Jakarta');
-        $charttrx['kuli'] = Transaction::selectRaw('DATE_FORMAT(transactions.tanggal, "%d.%m") as date, COALESCE(SUM(transactions.salary), 0) as total')
+        $charttrx['kuli'] = Transaction::selectRaw('DATE_FORMAT(transactions.tanggal, "%d.%m") as date, COALESCE(SUM(transactions.total_salary), 0) as total')
             ->whereDate("transactions.tanggal", '>=', $date10)
             ->groupBy('date')
             ->get()
@@ -59,7 +59,7 @@ class DashboardController extends Controller
             $bulan_sekarang = $bulan_terakhir->copy()->addMonths($i);
             $bulan[] = $bulan_sekarang->format('M Y');
 
-            $data_bulan_amount[] = Transaction::selectRaw('COALESCE(SUM(transactions.salary), 0) as total')
+            $data_bulan_amount[] = Transaction::selectRaw('COALESCE(SUM(transactions.total_salary), 0) as total')
                 ->whereDate("transactions.tanggal", '>=', $bulan_sekarang->format('Y-m-1'))
                 ->whereDate("transactions.tanggal", '<', $bulan_sekarang->copy()->addMonth()->format('Y-m-1'))
                 ->first()->total;
