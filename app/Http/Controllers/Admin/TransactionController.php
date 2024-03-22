@@ -44,15 +44,6 @@ class TransactionController extends Controller
             $data = DB::table('transactions')
                 ->select('transactions.*',)
                 ->whereBetween('transactions.tanggal', [$request->dari, $request->sampai]);
-            // $data = DB::table('transactions')
-            //     ->leftJoin('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
-            //     ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
-            //     ->select('transactions.*', 'transaction_details.*', 'users.name as name')
-            //     ->whereBetween('transactions.tanggal', [$request->dari, $request->sampai]);
-
-            // if ($request->kuli != 'all') {
-            //     $data->where('transactions.kuli_id', $request->kuli);
-            // }
 
             return Datatables::of($data->get())
                 ->addIndexColumn()
@@ -64,6 +55,9 @@ class TransactionController extends Controller
                     <form action="' . route('transactions.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
                         ' . method_field('DELETE') . csrf_field() . '
                         <div class="btn-group">
+                        <button type="button" onclick="show(' . $row->id . ')" class="btn btn-info">
+                            <i class="fa fa-eye"></i>
+                        </button>
                             <button type="button" onclick="edit(' . $row->id . ')" class="btn btn-warning">
                                 <i class="fa fa-pencil-alt"></i>
                             </button>
@@ -165,12 +159,22 @@ class TransactionController extends Controller
         $data                = $request->all();
 
         DB::table('transactions')->where('id', $data['id'])->update([
-            'kuli_id'       => $data['kuli_id'],
             'tanggal'       => $data['tanggal'],
-            'salary'        => $data['salary'],
-            'description'   => $data['description'],
-            'created_at'    => now(),
+            'total_salary'        => $data['salary'],
+            'updated_at'    => now(),
         ]);
+
+        $total_kuli = count($data['kuli']);
+        DB::table('transaction_details')->where('transaction_details.transaction_id', $data['id'])->delete();
+
+        foreach ($data['kuli'] as $kuli) {
+            $transaction_details = DB::table('transaction_details')->insertGetId([
+                'transaction_id' => $data['id'],
+                'kuli_id' => $kuli,
+                'salary'        => $data['salary'] / $total_kuli,
+                'created_at'    => now(),
+            ]);
+        }
 
         Alert::success('Success', $this->module . ' updated successfully.');
         return response()->json($data);
@@ -182,7 +186,7 @@ class TransactionController extends Controller
         $data = DB::table('transactions')
             ->leftJoin('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
             ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
-            ->select('transactions.*', 'transaction_details.*', 'users.name as name')
+            ->select('transactions.*', 'transaction_details.kuli_id', 'transaction_details.salary', 'users.name as name')
             ->where('transactions.id', $request->id)
             ->get();
 
@@ -197,6 +201,7 @@ class TransactionController extends Controller
         if (!$transaction) {
             return back()->with('error', $this->module . ' not found.');
         }
+        DB::table('transaction_details')->where('transaction_details.transaction_id', $transaction->id)->delete();
 
         $transaction->delete();
 

@@ -57,7 +57,7 @@
 
                     </div>
                     <div class="col-6 d-flex justify-content-between">
-                        <div class="col-4">
+                        {{-- <div class="col-4">
                             <label>Filter Kuli</label>
                             <div style="font-size: 17px;">
                                 <select class="form-control" id="filterkuli">
@@ -67,12 +67,12 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="col-4">
+                        </div> --}}
+                        <div class="col-6">
                             <label>Dari Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnawal }}" id="dari">
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <label>Sampai Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnakhir }}" id="sampai">
                         </div>
@@ -130,7 +130,7 @@
                                         <thead class="table-dark">
                                             <tr>
                                                 <th style="width: 30%">#</th>
-                                                <th style=" width: 70%;">Name</th>
+                                                <th style=" width: 70%;">Nama Kuli</th>
 
                                             </tr>
                                         </thead>
@@ -195,20 +195,27 @@
                         <div class="row">
                             <div class="col-12">
                                 <input type="hidden" id="editid" value="" class="form-control">
+                                <label>Kategori Kuli</label>
+                                <div style="font-size: 17px;">
+                                    <select class="form-control" id="editcategorykuli">
+
+                                    </select>
+                                </div>
+                                <hr>
                                 <div class="table-responsive">
                                     <table id="dataTable" class="table table-striped header-fixed">
                                         <thead class="table-dark">
                                             <tr>
                                                 <th style="width: 30%">#</th>
-                                                <th style=" width: 70%;">Name</th>
+                                                <th style=" width: 70%;">Nama Kuli</th>
 
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($kuli as $sal)
                                                 <tr>
-                                                    <td style="width: 30%"><input type="checkbox" name="kuli"
-                                                            value="{{ $sal->id }}">
+                                                    <td style="width: 30%"><input type="checkbox" name="editkuli"
+                                                            value="{{ $sal->id }}" id="editkuli{{ $sal->id }}">
                                                     </td>
                                                     <td style="width: 70%">{{ $sal->name }}</td>
                                                 </tr>
@@ -266,38 +273,29 @@
                         <div class="row">
                             <div class="col-12">
                                 <input type="hidden" id="editid" value="" class="form-control">
-                                <div class="table-responsive">
-                                    <table id="dataTable" class="table table-striped header-fixed">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th style="width: 30%">#</th>
-                                                <th style=" width: 70%;">Name</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody id="contentnya">
-                                            @foreach ($kuli as $sal)
-                                                <tr>
-                                                    <td style="width: 30%"><input type="checkbox" name="kuli"
-                                                            value="{{ $sal->id }}">
-                                                    </td>
-                                                    <td style="width: 70%">{{ $sal->name }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <hr>
-                                <label>Upah</label>
+                                <label>Kategori Kuli</label>
                                 <br>
-                                <input type="text" id="editupah" value="" required class="form-control">
+                                <div style="font-size: 17px;" id="showcategory"> </div>
                                 <hr>
                                 <label>Tanggal</label>
                                 <br>
-                                <input type="date" id="edittanggal" value="" required class="form-control">
+                                <div style="font-size: 17px;" id="showtanggal"> </div>
                                 <hr>
-                                <label>Deskripsi (optional)</label>
-                                <textarea rows="4" class="form-control" value="" style="font-size: 14px;" id="editdeskripsi"></textarea>
+                                <div class="table-responsive">
+                                    <table id="dataTable" class="table table-striped">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th style="width: 30%">#</th>
+                                                <th style=" width: 40%;">Nama Kuli</th>
+                                                <th style=" width: 40%;">Upah</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="showcontentnya">
+
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <hr>
 
                             </div>
@@ -311,13 +309,7 @@
                                     <button type="button" class="btn btn-secondary btn-block ml-auto"
                                         data-dismiss="modal">Tutup</button>
                                 </td>
-                                <td width="5%">
-                                    &nbsp;
-                                </td>
-                                <td>
-                                    <button type="button" onclick="Update();"
-                                        class="btn btn-primary btn-block btn-absen ml-auto menusxx">Simpan</button>
-                                </td>
+
                             </tr>
                         </table>
                     </div>
@@ -412,17 +404,7 @@
     <script type="text/javascript">
         $('#edit').on('hidden.bs.modal', function() {
             $('#editkuli').empty();
-        });
-
-        $('#filterkuli').select2({
-            theme: 'bootstrap4',
-            placeholder: "-- Pilih Kuli --",
-        });
-
-        $('#kuli').select2({
-            theme: 'bootstrap4',
-            placeholder: "-- Pilih Kuli --",
-            dropdownParent: '#new',
+            $('input[name="editkuli"]').attr('checked', false);
         });
 
         function Tambah() {
@@ -442,29 +424,75 @@
                 success: function(response) {
                     var kuli = {{ Js::from($kuli) }};
                     var content_data = '';
-                    $('#editupah').val(formatRupiah1(response.salary));
-                    $('#edittanggal').val(response.tanggal);
-                    $('#editid').val(response.id);
-                    $('#editdeskripsi').val(response.description);
+                    $('#editupah').val(formatRupiah1(response[0].total_salary));
+                    $('#edittanggal').val(response[0].tanggal);
+                    $('#editid').val(response[0].id);
+                    if (response[0].category == 'beras') {
 
-                    $(document).ready(function() {
-                        $('#editkuli').select2({
-                            dropdownParent: '#edit',
-                            theme: 'bootstrap4',
+                    }
+                    $('#editcategorykuli').html(
+                        ' <option ' + (response[0].category == 'beras' ? 'selected' : '') +
+                        ' value="beras">Kuli Beras</option><option ' + (response[0].category == 'padi' ?
+                            'selected' : '') +
+                        ' value="padi">Kuli Padi</option><option ' + (response[0].category == 'pelet' ?
+                            'selected' : '') + ' value="pelet">Kuli Pelet</option><option ' + (response[0]
+                            .category == 'sekam' ?
+                            'selected' : '') + ' value="sekam">Kuli Sekam</option>'
+                    );
 
-                        });
-                    });
-                    $.each(kuli, function(index, data) {
-
-                        if (response.kuli_id == data.id) {
-                            var newState = new Option(data.name, data.id, true, true);
-                        } else {
-                            var newState = new Option(data.name, data.id, false, false);
-                        }
-                        $("#editkuli").append(newState).trigger('change');
-
+                    $.each(response, function(index, data) {
+                        $('#editkuli' + data.kuli_id).attr('checked', true);
                     });
 
+                    $('#buttonupdate').html(
+                        '<button type="button" onclick="Update(' + response[0].id +
+                        ');" class="btn btn-block btn-absen ml-auto menusxx">Update</button>'
+                    )
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    NotifError()
+                },
+                complete: function(response) {
+                    $('.loading').attr('style', 'display: none');
+                }
+            });
+        }
+
+        function show(id) {
+            $('#show').modal('show');
+
+            $('.loading').attr('style', 'display: block');
+            $.ajax({
+                type: 'GET',
+                url: "{{ route('transactions.show') }}",
+                data: {
+                    'id': id,
+                },
+                success: function(response) {
+                    var content_data = '';
+                    $('#showtanggal').html(response[0].tanggal);
+                    $('#showcategory').html(response[0].category);
+
+                    var content_data = '';
+                    var no = 0;
+                    $.each(response, function(index, data) {
+
+                        content_data += '<tr>';
+                        content_data += '<td>' + (no += 1) + '</td>';
+                        content_data += '<td>' + (data.name ?? '0') + '</td>';
+                        content_data += '<td style="text-align:right;">' + formatRupiah1(data.salary ??
+                            '0') + '</td>';
+                        content_data += '</tr>';
+
+                    });
+                    content_data += "<tr>"
+                    content_data += "<th>GRANDTOTAL</th>"
+                    content_data += '<th style="text-align:right;" colspan="2" id="grandtotal">' +
+                        formatRupiah1(
+                            response[0].total_salary ?? '0') +
+                        '</th>'
+                    content_data += "</tr>"
+                    $('#showcontentnya').html(content_data);
                     $('#buttonupdate').html(
                         '<button type="button" onclick="Update(' + response.id +
                         ');" class="btn btn-block btn-absen ml-auto menusxx">Update</button>'
@@ -499,7 +527,6 @@
                     $('input[name="kuli"]:checked').each(function() {
                         selectedKuli.push(this.value);
                     });
-                    console.log(selectedKuli);
 
                     if (selectedKuli.length == 0) {
                         NotifWarning('Kuli Harus Di Pilih')
@@ -562,21 +589,25 @@
                     var rupiah = $('#editupah').val();
                     var kuli = $('#editkuli').val();
 
-                    if (kuli == '') {
+                    var selectededitKuli = new Array();
+                    $('input[name="editkuli"]:checked').each(function() {
+                        selectededitKuli.push(this.value);
+                    });
+
+                    if (selectededitKuli.length == 0) {
                         NotifWarning('Kuli Harus Di Pilih')
                         return 0;
                     }
 
-                    $('#new').modal('hide');
                     $.ajax({
                         type: 'POST',
                         url: "{{ route('transactions.update') }}",
                         data: {
                             '_token': $('meta[name="csrf-token"]').attr('content'),
-                            'kuli_id': kuli,
+                            'kuli': selectededitKuli,
                             'salary': parseInt(rupiah.replace(/Rp\.|\./g, '')),
                             'tanggal': $('#edittanggal').val(),
-                            'description': $('#editdeskripsi').val(),
+                            'category': $('#editcategorykuli').val(),
                             'id': $('#editid').val(),
                         },
                         success: function(data) {

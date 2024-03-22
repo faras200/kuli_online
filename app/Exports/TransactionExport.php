@@ -26,13 +26,14 @@ class TransactionExport implements FromView
     public function view(): View
     {
         $data = DB::table('transactions')
-            ->leftJoin('users', 'transactions.kuli_id', '=', 'users.id')
-            ->select('transactions.*', 'users.name as name')
+            ->leftJoin('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
+            ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
+            ->select('transactions.*', 'transaction_details.salary', 'transaction_details.kuli_id', 'users.name as name')
             ->whereBetween('transactions.tanggal', [$this->dari, $this->sampai]);
 
-        if ($this->kuli != 'all') {
-            $data->where('transactions.kuli_id', $this->kuli);
-        }
+        // if ($this->kuli != 'all') {
+        //     $data->where('transactions.kuli_id', $this->kuli);
+        // }
 
         return view('backend.transaction.excel', [
             'transactions' => $data->get()
