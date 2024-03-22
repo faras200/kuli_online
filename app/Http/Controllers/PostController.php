@@ -100,4 +100,6 @@ class PostController extends Controller
 
         return view('frontend.posts.search_result', $data);
     }
+
+    
 }

@@ -27,7 +27,7 @@ class TransactionExport implements FromView
     {
         $data = DB::table('transactions')
             ->leftJoin('users', 'transactions.kuli_id', '=', 'users.id')
-            ->select('transactions.*', 'users.name as name')
+            ->select('transactions.*', 'users.name as name','users.npwp','users.identity_card_number')
             ->whereBetween('transactions.tanggal', [$this->dari, $this->sampai]);
 
         if ($this->kuli != 'all') {

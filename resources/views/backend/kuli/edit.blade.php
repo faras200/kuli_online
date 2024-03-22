@@ -84,7 +84,7 @@
                             <label for="address">Alamat</label>
                             <textarea type="address" class="form-control" name="address" id="address" rows="2">{{ old('address', $users->address) }}</textarea>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col col-6 col-lg-3">
                                 <div class="form-group">
                                     <label for="province_id">Provinsi</label>
@@ -194,7 +194,7 @@
                                         class="img-fluid">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     {{-- <div class="chart tab-pane" id="login">
