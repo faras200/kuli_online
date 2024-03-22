@@ -21,6 +21,7 @@ use App\Http\Requests\KuliUpdateRequest;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
+use Auth;
 
 class TransactionController extends Controller
 {
@@ -40,6 +41,8 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
+
         if ($request->ajax()) {
             $data = DB::table('transactions')
                 ->select('transactions.*',)
@@ -71,9 +74,11 @@ class TransactionController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        $kuli = User::whereHas('roles', function ($query) {
-            $query->where('name', 'kuli');
-        });
+        // $kuli = User::whereHas('roles', function ($query) {
+        //     $query->where('name', 'kuli');
+        // });
+
+        $kuli = User::where("wilayah_id", $user->wilayah_id);
         // Set date variables
         $hariini = date('Y-m-d');
         $blnawal = date('Y-m-01', strtotime($hariini));

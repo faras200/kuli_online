@@ -10,7 +10,7 @@
     <form action="{{ route('kuli.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="card">
-            <div class="card-header">
+            <!-- <div class="card-header">
                 <h3 class="card-title">
                     <ul class="nav nav-pills ml-auto">
                         <li class="nav-item">
@@ -21,7 +21,7 @@
                 </h3>
                 <div class="card-tools">
                 </div>
-            </div><!-- /.card-header -->
+            </div> -->
 
             <div class="card-body">
                 <div class="tab-content p-0">
@@ -35,7 +35,7 @@
                                         value="{{ old('name') }}" required>
                                 </div>
                             </div>
-                            <div class="col col-12 col-lg-4">
+                            <!-- <div class="col col-12 col-lg-4">
                                 <div class="form-group">
                                     <label for="phone">No. HP</label>
                                     <input type="number" class="form-control" name="phone" id="phone"
@@ -48,7 +48,7 @@
                                     <input type="number" class="form-control" name="rekening" id="rekening"
                                         value="{{ old('rekening') }}">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col col-12 col-lg-4">
                                 <div class="form-group">
                                     <label for="identity_card_number">NIK</label>
@@ -72,12 +72,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="address">Alamat</label>
                             <textarea type="address" class="form-control" name="address" id="address" rows="2">{{ old('address') }}</textarea>
-                        </div>
+                        </div> -->
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col col-6 col-lg-3">
                                 <div class="form-group">
                                     <label for="province_id">Provinsi</label>
@@ -168,7 +168,7 @@
                                         ada form yang belum Anda isi.</li>
                                 </ul>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="row">
                             <div class="col col-12 col-lg-4">

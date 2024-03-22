@@ -1,5 +1,16 @@
 @extends('layouts.app')
+<style type="text/css">
+    .btn {
 
+        padding: 0.1rem 0.5rem;
+    }
+
+    #dataTable td, #dataTable th {
+    padding: 0.4rem;
+}
+
+
+</style>
 @section('content')
     @if ($message = Session::get('message'))
         <div class="alert alert-success">
@@ -24,12 +35,9 @@
                 <table id="dataTable" class="table table-striped table-bordered">
                     <thead class="table-dark">
                         <th>No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
+                        <th>Name</th>    
                         <th>NIK</th>
                         <th>NPWP</th>
-                        <th>Rekening</th>
                         <th>Aksi</th>
                     </thead>
                     <tbody></tbody>
@@ -60,14 +68,6 @@
                         name: 'name'
                     },
                     {
-                        data: 'email',
-                        name: 'email'
-                    },
-                    {
-                        data: 'phone',
-                        name: 'phone'
-                    },
-                    {
                         data: 'identity_card_number',
                         name: 'identity_card_number'
                     },
@@ -75,10 +75,7 @@
                         data: 'npwp',
                         name: 'npwp'
                     },
-                    {
-                        data: 'rekening',
-                        name: 'rekening'
-                    },
+
                     {
                         data: 'action',
                         name: 'action',

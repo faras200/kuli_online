@@ -13,51 +13,7 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown user-menu">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                @if (auth()->user()->profile_image)
-                    <img src="{{ Storage::url('images/users/' . auth()->user()->profile_image) }}"
-                        class="user-image img-circle elevation-1" alt="User Image">
-                @else
-                    <img src="{{ asset('storage/images/default-users.png') }}" class="user-image img-circle elevation-1"
-                        alt="User Image">
-                @endif
-                <div class="d-none d-md-inline position-relative">
-                    <span>{{ auth()->user()->name }}</span>
-                </div>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <li class="user-header text-bold">
-                    <div class="row">
-                        <div class="col">
-                            @if (auth()->user()->profile_image != null)
-                                <img src="{{ Storage::url('images/users/' . auth()->user()->profile_image) }}"
-                                    class="img-fluid img-circle elevation-1" style="width:50%" alt="User Image">
-                            @else
-                                <img src="{{ asset('images/default-users.jpg') }}"
-                                    class="img-fluid img-circle elevation-1" style="width:50%" alt="User Image">
-                            @endif
-                        </div>
-                    </div>
-                    <p>
-                        {{ auth()->user()->name }}
-                    </p>
-                </li>
-
-                <li class="user-footer">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="btn-block">
-                                <a href="{{ route('profile.edit', auth()->user()->id) }}"
-                                    class="btn btn-block btn-warning">
-                                    <i class="fas fa-user-edit"></i> Edit Profil
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </li>
+        
         <li class="nav-item">
             <form method="POST" style="display:inline;" action="{{ route('logout') }}">
                 @csrf
@@ -75,8 +31,7 @@
 <aside class="main-sidebar sidebar-dark-info elevation-4">
     <!-- Brand Logo -->
     <a href="{{ route('dashboard.index') }}" class="brand-link">
-        <img src="{{ asset('storage/images/app-logo.png') }}" alt="{{ config('app.name') }}"
-            class="brand-image img-circle elevation-3 bg-secondary" style="opacity: .8">
+        
         <span class="brand-text font-weight-light">{{ config('app.name') }}</span>
     </a>
 
