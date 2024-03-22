@@ -74,11 +74,11 @@ class TransactionController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        // $kuli = User::whereHas('roles', function ($query) {
-        //     $query->where('name', 'kuli');
-        // });
+        $kuli = User::whereHas('roles', function ($query) {
+            $query->where('name', 'kuli');
+        });
 
-        $kuli = User::where("wilayah_id", $user->wilayah_id);
+        // $kuli = User::where("wilayah_id", $user->wilayah_id);
         // Set date variables
         $hariini = date('Y-m-d');
         $blnawal = date('Y-m-01', strtotime($hariini));

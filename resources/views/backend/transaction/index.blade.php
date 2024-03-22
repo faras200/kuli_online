@@ -57,7 +57,7 @@
 
             <div class="row">
                 <div class="col-12 d-flex justify-content-between">
-                    <div class="col-8 d-flex align-items-center">
+                    <div class="col-6 d-flex align-items-center">
                         <button onclick="Tambah()" type="button" class="btn btn-primary mr-2">
                             <i class="fa fa-plus"></i>
                             Add Data
@@ -83,13 +83,10 @@
                         <div class="col-6">
                             <label>Dari Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnawal }}" id="dari">
-                            <input type="hidden" id="filterkuli" value="all">
                         </div>
                         <div class="col-6">
-                            <div class="col-6">
-                                <label>Sampai Tanggal :</label>
-                                <input type="date" class="form-control" value="{{ $blnakhir }}" id="sampai">
-                            </div>
+                            <label>Sampai Tanggal :</label>
+                            <input type="date" class="form-control" value="{{ $blnakhir }}" id="sampai">
                         </div>
                     </div>
                 </div>
