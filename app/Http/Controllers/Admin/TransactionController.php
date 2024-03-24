@@ -58,7 +58,7 @@ class TransactionController extends Controller
                     <form action="' . route('transactions.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
                         ' . method_field('DELETE') . csrf_field() . '
                         <div class="btn-group">
-                            <button type="button" onclick="view(' . $row->id . ')" class="btn btn-primary">
+                            <button type="button" onclick="show(' . $row->id . ')" class="btn btn-primary">
                                 <i class="fa fa-eye"></i>
                             </button>
                             <button type="button" onclick="edit(' . $row->id . ')" class="btn btn-warning">
@@ -74,11 +74,11 @@ class TransactionController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        $kuli = User::whereHas('roles', function ($query) {
-            $query->where('name', 'kuli');
-        });
+        // $kuli = User::whereHas('roles', function ($query) {
+        //     $query->where('name', 'kuli');
+        // });
 
-        // $kuli = User::where("wilayah_id", $user->wilayah_id);
+        $kuli = User::where("wilayah_id", $user->wilayah_id);
         // Set date variables
         $hariini = date('Y-m-d');
         $blnawal = date('Y-m-01', strtotime($hariini));

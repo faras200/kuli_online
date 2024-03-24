@@ -96,7 +96,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="dataTable" class="table table-striped table-bordered">
+                    <table id="dataTablexx" class="table table-striped table-bordered">
                         <thead class="table-dark">
                             <tr>
                                 <th>No.</th>
@@ -237,8 +237,18 @@
                                         </select>
                                     </div>
                                     <hr>
+                                    <div class="row mb-3">
+                                        <div class="col-md-9">
+                                            <input type="text" id="searchInput3" class="form-control"
+                                                placeholder="Search...">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div id="contcheck3" style="font-size: 18px;font-weight:bold;">0</div>
+                                            <div style="font-size: 11px;">Kuli Yang Dipilih</div>
+                                        </div>
+                                    </div>
                                     <div class="table-responsive">
-                                        <table id="dataTable" class="table table-striped header-fixed">
+                                        <table id="dataTable3" class="table table-striped header-fixed">
                                             <thead class="table-dark">
                                                 <tr>
                                                     <th style="width: 30%">#</th>
@@ -249,8 +259,8 @@
                                             <tbody>
                                                 @foreach ($kuli as $sal)
                                                     <tr>
-                                                        <td style="width: 30%"><input type="checkbox" name="editkuli"
-                                                                value="{{ $sal->id }}"
+                                                        <td style="width: 30%"><input type="checkbox" name="editkuli" 
+                                                                value="{{ $sal->id }}" class="kuliCheckbox3"
                                                                 id="editkuli{{ $sal->id }}">
                                                         </td>
                                                         <td style="width: 70%">{{ $sal->name }}</td>
@@ -318,10 +328,10 @@
                                     <div style="font-size: 17px;" id="showtanggal"> </div>
                                     <hr>
                                     <div class="table-responsive">
-                                        <table id="dataTable" class="table table-striped">
+                                        <table id="dataTable4" class="table table-striped">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th style="width: 30%">#</th>
+                                                    <th style="width: 10%">#</th>
                                                     <th style=" width: 40%;">Nama Kuli</th>
                                                     <th style=" width: 40%;">Upah</th>
 
@@ -378,10 +388,28 @@
 
                     $('#contcheck').html(countChecked)
                 });
+
+                $('#searchInput3').on('keyup', function() {
+                    var searchText = $(this).val().toLowerCase();
+                    $('#dataTable3 tbody tr').filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1)
+                    });
+                });
+
+                $('.kuliCheckbox3').on('change', function() {
+                    var countChecked = $('input.kuliCheckbox3:checked').length;
+
+                    $('#contcheck3').html(countChecked)
+                });
+
+                
             });
 
+            var table;
+
             $(document).ready(function() {
-                var table = $('#dataTable').DataTable({
+
+                var table = $('#dataTablexx').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: {
@@ -470,13 +498,18 @@
                         );
                     }
                 });
+
+                $('#dari').on('change', function() {
+                    table.ajax.reload();
+                });
+
+                $('#sampai').on('change', function() {
+
+                    table.ajax.reload();
+
+                });
             });
 
-
-
-            function reload_table() {
-                table.ajax.reload(null, false); //reload datatable ajax
-            }
         </script>
 
         <script type="text/javascript">
@@ -574,7 +607,7 @@
 
                         });
                         content_data += "<tr>"
-                        content_data += "<th>GRANDTOTAL</th>"
+                        content_data += "<th colspan='2'>GRANDTOTAL</th>"
                         content_data += '<th style="text-align:right;" colspan="2" id="grandtotal">' +
                             formatRupiah1(
                                 response[0].total_salary ?? '0') +
@@ -641,8 +674,12 @@
                                     buttons: false,
                                     timer: 1000,
                                 });
+                                setTimeout(function() {
+                                    window.location.href = '/admin/transactions';
+                                }, 1500);
                                 $('.loading').attr('style', 'display: none');
                                 table.ajax.reload();
+                                
                             },
                             error: function(xhr, ajaxOptions, thrownError) {
                                 NotifError()
@@ -708,6 +745,7 @@
                                 });
                                 $('.loading').attr('style', 'display: none');
                                 table.ajax.reload();
+                                $('#edit').modal('hide');
                             },
                             error: function(xhr, ajaxOptions, thrownError) {
                                 NotifError()
@@ -733,18 +771,6 @@
             });
 
             $('#filterkuli').on('change', function() {
-
-                table.ajax.reload();
-
-            });
-
-            $('#dari').on('change', function() {
-
-                table.ajax.reload();
-
-            });
-
-            $('#sampai').on('change', function() {
 
                 table.ajax.reload();
 
