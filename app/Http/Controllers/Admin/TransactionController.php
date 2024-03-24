@@ -67,6 +67,9 @@ class TransactionController extends Controller
                     <form action="' . route('transactions.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
                         ' . method_field('DELETE') . csrf_field() . '
                         <div class="btn-group">
+                            <button type="button" onclick="view(' . $row->id . ')" class="btn btn-primary">
+                                <i class="fa fa-eye"></i>
+                            </button>
                             <button type="button" onclick="edit(' . $row->id . ')" class="btn btn-warning">
                                 <i class="fa fa-pencil-alt"></i>
                             </button>
