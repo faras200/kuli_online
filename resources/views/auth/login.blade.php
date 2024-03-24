@@ -7,7 +7,7 @@
             <div class="card-header text-center">
                 <a href="" class="h1">
                     <img src="{{ asset('images/general/app-logo.png') }}" height="35" alt="">
-                    <b>{{ config('app.name') }}</b>
+                    <b>Aplikasi Kuli</b>
                 </a>
             </div>
 
