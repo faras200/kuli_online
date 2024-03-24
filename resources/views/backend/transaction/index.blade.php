@@ -103,7 +103,8 @@
                                 <th>Tanggal</th>
                                 <th>Total Upah</th>
                                 <th>Kategori Kuli</th>
-                                <th>Aksi</th>
+                                <th>Lokasi</th>
+                                <th width="15%">Aksi</th>
                             </tr>
                         </thead>
                         <tfoot class="table-dark">
@@ -111,6 +112,7 @@
                                 <th></th>
                                 <th></th>
                                 <th id="totalSalaryFooter"></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -440,6 +442,10 @@
                         {
                             data: 'category',
                             name: 'category'
+                        },
+                        {
+                            data: 'wilayah_name',
+                            name: 'wilayah_name'
                         },
                         {
                             data: 'action',

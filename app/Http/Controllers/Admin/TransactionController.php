@@ -45,30 +45,38 @@ class TransactionController extends Controller
 
         if ($request->ajax()) {
             $data = DB::table('transactions')
-                ->select('transactions.*',)
-                ->whereBetween('transactions.tanggal', [$request->dari, $request->sampai]);
+                ->select('transactions.*','wilayahs.name as wilayah_name')
+                ->leftJoin("wilayahs", "transactions.wilayah_id", "=", "wilayahs.id")
+                ->whereBetween('tanggal', [$request->dari, $request->sampai]);
 
             return Datatables::of($data->get())
                 ->addIndexColumn()
                 ->addColumn('DT_RowIndex', function ($row) {
                     return $row->id;
                 })
-                ->addColumn('action', function ($row) {
-                    $btn = '
-                    <form action="' . route('transactions.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
-                        ' . method_field('DELETE') . csrf_field() . '
-                        <div class="btn-group">
-                            <button type="button" onclick="show(' . $row->id . ')" class="btn btn-primary">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                            <button type="button" onclick="edit(' . $row->id . ')" class="btn btn-warning">
-                                <i class="fa fa-pencil-alt"></i>
-                            </button>
-                            <button type="submit" class="btn btn-danger" title="Delete">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                    </form>';
+                ->addColumn('action', function ($row) use ($user) {
+
+                    if($row->wilayah_id == $user->wilayah_id){
+                        $btn = '
+                        <form action="' . route('transactions.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
+                            ' . method_field('DELETE') . csrf_field() . '
+                            <div class="btn-group">
+                                <button type="button" onclick="show(' . $row->id . ')" class="btn btn-primary">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                                <button type="button" onclick="edit(' . $row->id . ')" class="btn btn-warning">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </button>
+                                <button type="submit" class="btn btn-danger" title="Delete">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </form>';
+                    } else {
+                        $btn="";
+                    }
+
+
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -113,13 +121,16 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $data                = $request->all();
+        $user = Auth::user();
+        $data = $request->all();
 
         $transaction = DB::table('transactions')->insertGetId([
             'category'      => $data['category'],
             'tanggal'       => $data['tanggal'],
+            'wilayah_id'       => $user->wilayah_id,
             'total_salary'        => $data['salary'],
             'created_at'    => now(),
+            'created_by'       => $user->id,
         ]);
         $total_kuli = count($data['kuli']);
 
