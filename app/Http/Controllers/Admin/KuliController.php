@@ -40,7 +40,7 @@ class KuliController extends Controller
     {
         $user = Auth::user();
         if ($request->ajax()) {
-            $kuli = User::where("wilayah_id", $user->wilayah_id);
+            $data = User::where("wilayah_id", $user->wilayah_id);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('DT_RowIndex', function ($row) {
