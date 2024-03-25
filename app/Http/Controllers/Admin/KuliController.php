@@ -18,6 +18,7 @@ use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Province;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
+use Auth;
 
 class KuliController extends Controller
 {
@@ -37,10 +38,9 @@ class KuliController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         if ($request->ajax()) {
-            $data = User::whereHas('roles', function ($query) {
-                $query->where('name', 'kuli');
-            });
+            $kuli = User::where("wilayah_id", $user->wilayah_id);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('DT_RowIndex', function ($row) {
