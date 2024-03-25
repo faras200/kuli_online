@@ -94,9 +94,11 @@ class KuliController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
+        $user = Auth::user();
         // return $request;
         $data                = $request->validated();
         $data['created_by']  = auth()->id();
+        $data['wilayah_id']  = $user->wilayah_id;
 
         if ($request->password != null) {
             $data['password'] = Hash::make($request->password);
