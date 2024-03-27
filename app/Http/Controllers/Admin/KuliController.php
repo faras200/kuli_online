@@ -19,6 +19,7 @@ use Laravolt\Indonesia\Models\Province;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
 use Auth;
+use DB;
 
 class KuliController extends Controller
 {
@@ -40,7 +41,7 @@ class KuliController extends Controller
     {
         $user = Auth::user();
         if ($request->ajax()) {
-            $data = User::where("wilayah_id", $user->wilayah_id);
+            $data = User::where("wilayah_id", $user->wilayah_id)->orderBy("id", "desc");
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('DT_RowIndex', function ($row) {
@@ -102,14 +103,6 @@ class KuliController extends Controller
 
         if ($request->password != null) {
             $data['password'] = Hash::make($request->password);
-        }
-
-        if ($request->hasFile('profile_image')) {
-            // Menyimpan file baru
-            $profile_image = $request->file('profile_image');
-            $profile_imageName = now()->format('YmdHis') . '_.' . $profile_image->hashName();
-            Storage::disk('public')->put('images/users/' . $profile_imageName, file_get_contents($profile_image));
-            $data['profile_image'] = $profile_imageName;
         }
 
         $user = User::create($data);

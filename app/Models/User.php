@@ -26,7 +26,7 @@ class User extends Authenticatable
         'role_id',
         'name',
         'identity_card_number',
-        'email',
+        'wilayah_id',
         'email',
         'gender',
         'phone',
