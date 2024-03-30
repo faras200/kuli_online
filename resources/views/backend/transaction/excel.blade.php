@@ -3,7 +3,9 @@
         <tr>
             <th rowspan="1" style="background-color: #dcdcdc;">No</th>
             <th rowspan="1" style="background-color: #dcdcdc;">Tanggal</th>
+            <th rowspan="1" style="background-color: #dcdcdc;">Lokasi</th>
             <th rowspan="1" style="background-color: #dcdcdc;">Nama Kuli</th>
+            <th rowspan="1" style="background-color: #dcdcdc;">Type</th>
             <th rowspan="1" style="background-color: #dcdcdc;">NPWP</th>
             <th rowspan="1" style="background-color: #dcdcdc;">KTP</th>
             <th rowspan="1" style="background-color: #dcdcdc;">Upah</th>
@@ -23,7 +25,9 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $tran->tanggal }}</td>
+                <td>{{ $tran->wilayah }}</td>
                 <td>{{ $tran->name }}</td>
+                <td>{{ strtoupper($tran->category) }}</td>
                 <td>{{ $tran->npwp }}</td>
                 @if($tran->identity_card_number == '')
                     <td></td>
