@@ -54,6 +54,13 @@ class TransactionController extends Controller
                 ->addColumn('DT_RowIndex', function ($row) {
                     return $row->id;
                 })
+                ->addColumn('CountKuli', function ($row) {
+                    $detail = $data = DB::table('transaction_details')
+                    ->where("transaction_id", $row->id)
+                    ->count();
+
+                    return $detail;
+                })
                 ->addColumn('action', function ($row) use ($user) {
 
                     if($row->wilayah_id == $user->wilayah_id){

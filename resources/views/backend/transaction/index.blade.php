@@ -102,6 +102,7 @@
                                 <th>No.</th>
                                 <th>Tanggal</th>
                                 <th>Total Upah</th>
+                                <th>Kuli</th>
                                 <th>Kategori Kuli</th>
                                 <th>Lokasi</th>
                                 <th width="15%">Aksi</th>
@@ -112,6 +113,7 @@
                                 <th></th>
                                 <th></th>
                                 <th id="totalSalaryFooter"></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -438,6 +440,10 @@
                         {
                             data: 'total_salary',
                             name: 'total_salary'
+                        },
+                        {
+                            data: 'CountKuli',
+                            name: 'CountKuli'
                         },
                         {
                             data: 'category',
