@@ -575,6 +575,8 @@
                             '<button type="button" onclick="Update(' + response[0].id +
                             ');" class="btn btn-block btn-absen ml-auto menusxx">Update</button>'
                         )
+
+                        $('#contcheck3').html(response.length);
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         NotifError()
@@ -602,6 +604,9 @@
 
                         var content_data = '';
                         var no = 0;
+
+
+
                         $.each(response, function(index, data) {
 
                             content_data += '<tr>';
@@ -730,6 +735,8 @@
                             return 0;
                         }
 
+                        $('#edit').modal('hide');
+
                         $.ajax({
                             type: 'POST',
                             url: "{{ route('transactions.update') }}",
@@ -749,6 +756,9 @@
                                     buttons: false,
                                     timer: 1000,
                                 });
+                                setTimeout(function() {
+                                    window.location.href = '/admin/transactions';
+                                }, 1500);
                                 $('.loading').attr('style', 'display: none');
                                 table.ajax.reload();
                                 $('#edit').modal('hide');
