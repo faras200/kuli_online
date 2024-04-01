@@ -44,10 +44,24 @@ class TransactionController extends Controller
         $user = Auth::user();
 
         if ($request->ajax()) {
-            $data = DB::table('transactions')
+
+            if($request->kuli == "all"){
+
+                $data = DB::table('transactions')
                 ->select('transactions.*','wilayahs.name as wilayah_name')
                 ->leftJoin("wilayahs", "transactions.wilayah_id", "=", "wilayahs.id")
                 ->whereBetween('tanggal', [$request->dari, $request->sampai]);
+
+            } else {
+
+                $data = DB::table('transactions')
+                ->select('transactions.*','wilayahs.name as wilayah_name')
+                ->leftJoin("wilayahs", "transactions.wilayah_id", "=", "wilayahs.id")
+                ->whereBetween('tanggal', [$request->dari, $request->sampai])
+                ->where("transactions.category", $request->kuli);
+
+            }
+            
 
             return Datatables::of($data->get())
                 ->addIndexColumn()
@@ -69,7 +83,7 @@ class TransactionController extends Controller
                             ' . method_field('DELETE') . csrf_field() . '
                             <div class="btn-group">
                                 <button type="button" onclick="show(' . $row->id . ')" class="btn btn-primary">
-                                    <i class="fa fa-eye"></i>
+                                    <i style="line-height: 0.8;" class="fa fa-eye"></i>
                                 </button>
                                 <button type="button" onclick="edit(' . $row->id . ')" class="btn btn-warning">
                                     <i class="fa fa-pencil-alt"></i>

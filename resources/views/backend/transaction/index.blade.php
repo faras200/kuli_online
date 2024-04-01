@@ -69,22 +69,22 @@
 
                     </div>
                     <div class="col-6 d-flex justify-content-between">
-                        {{-- <div class="col-4">
-                            <label>Filter Kuli</label>
+                        <div class="col-4">
+                            <label>Filter Category</label>
                             <div style="font-size: 17px;">
                                 <select class="form-control" id="filterkuli">
-                                    <option value="all">Semua Kuli</option>
-                                    @foreach ($kuli as $sal)
-                                        <option value="{{ $sal->id }}">{{ $sal->name }}</option>
-                                    @endforeach
+                                    <option value="all">All</option>
+                                    <option value="beras">Kuli Beras</option>
+                                    <option value="padi">Kuli Padi</option>
+                                    <option value="peletsekam">Kuli Pelet/Sekam</option>
                                 </select>
                             </div>
-                        </div> --}}
-                        <div class="col-6">
+                        </div>
+                        <div class="col-4">
                             <label>Dari Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnawal }}" id="dari">
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <label>Sampai Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnakhir }}" id="sampai">
                         </div>
@@ -146,8 +146,7 @@
                                         <select class="form-control" id="categorykuli">
                                             <option value="beras">Kuli Beras</option>
                                             <option value="padi">Kuli Padi</option>
-                                            <option value="pelet">Kuli Pelet</option>
-                                            <option value="sekam">Kuli Sekam</option>
+                                            <option value="peletsekam">Kuli Pelet/Sekam</option>
                                         </select>
                                     </div>
                                     <hr>
@@ -520,6 +519,12 @@
                     table.ajax.reload();
 
                 });
+
+                $('#filterkuli').on('change', function() {
+
+                    table.ajax.reload();
+
+                });
             });
 
         </script>
@@ -527,11 +532,6 @@
         <script type="text/javascript">
             $('#edit').on('hidden.bs.modal', function() {
                 $('#editkuli').empty();
-            });
-
-            $('#filterkuli').select2({
-                theme: 'bootstrap4',
-                placeholder: "-- Pilih Kuli --",
             });
 
             $('#kuli').select2({
@@ -792,11 +792,6 @@
                 window.location.href = `/admin/transactions/print-excel?dari=${dari}&sampai=${sampai}&kuli=${kuli}`;
             });
 
-            $('#filterkuli').on('change', function() {
-
-                table.ajax.reload();
-
-            });
 
             function NotifError(texts) {
                 swal({

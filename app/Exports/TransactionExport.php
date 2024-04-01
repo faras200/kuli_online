@@ -25,13 +25,28 @@ class TransactionExport implements FromView
 
     public function view(): View
     {
-        $data = DB::table('transaction_details')
-            ->leftJoin('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
-            ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
-            ->leftJoin('wilayahs', 'users.wilayah_id', '=', 'wilayahs.id')
-            ->select('transactions.*', 'users.name as name', 'users.npwp', 'users.identity_card_number', 
-            'transaction_details.salary','wilayahs.name as wilayah')
-            ->whereBetween('transactions.tanggal', [$this->dari, $this->sampai]);
+        if($this->kuli == "all"){
+
+            $data = DB::table('transaction_details')
+                ->leftJoin('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+                ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
+                ->leftJoin('wilayahs', 'users.wilayah_id', '=', 'wilayahs.id')
+                ->select('transactions.*', 'users.name as name', 'users.npwp', 'users.identity_card_number', 
+                'transaction_details.salary','wilayahs.name as wilayah')
+                ->whereBetween('transactions.tanggal', [$this->dari, $this->sampai]);
+
+        } else {
+
+            $data = DB::table('transaction_details')
+                ->leftJoin('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+                ->leftJoin('users', 'transaction_details.kuli_id', '=', 'users.id')
+                ->leftJoin('wilayahs', 'users.wilayah_id', '=', 'wilayahs.id')
+                ->select('transactions.*', 'users.name as name', 'users.npwp', 'users.identity_card_number', 
+                'transaction_details.salary','wilayahs.name as wilayah')
+                ->whereBetween('transactions.tanggal', [$this->dari, $this->sampai])
+                ->where("transactions.category", $this->kuli);
+
+        }
 
         // if ($this->kuli != 'all') {
         //     $data->where('transactions.kuli_id', $this->kuli);
