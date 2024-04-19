@@ -45,6 +45,7 @@ Route::middleware(['auth', 'role:admin|author'])->prefix('admin')->group(functio
     Route::get('transactions/print-excel', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('transactions/show', [TransactionController::class, 'show'])->name('transactions.show');
     Route::post('transactions/update', [TransactionController::class, 'update'])->name('transactions.update');
+    Route::get('kuli/print-excel', [KuliController::class, 'export'])->name('kuli.export');
     Route::resource('kuli', KuliController::class);
 
     Route::prefix('configuration')->group(function () {

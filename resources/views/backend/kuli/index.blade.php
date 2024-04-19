@@ -26,6 +26,10 @@
                     Add Data
                 </a>
                 <a href="#" class="btn btn-dark" onclick="reload_table()"><i class="fa fa-refresh"></i> Refresh</a>
+                <button id="cetakexcel" type="button" class="btn btn-success mr-2">
+                    <i class="fa fa-print"></i>
+                    Print Excel
+                </button>
             </h3>
         </div>
         <!-- /.card-header -->
@@ -113,5 +117,9 @@
         function reload_table() {
             table.ajax.reload(null, false); //reload datatable ajax
         }
+
+        $("#cetakexcel").click(() => {
+            window.location.href = `/admin/kuli/print-excel`;
+        });
     </script>
 @endsection

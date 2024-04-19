@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
-
+use App\Exports\KuliExport;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Laravolt\Indonesia\Models\City;
@@ -115,6 +115,13 @@ class KuliController extends Controller
 
         Alert::success('Success', $this->module . ' added successfully.');
         return redirect()->route('kuli.index');
+    }
+
+    public function export(Request $request)
+    {
+
+        date_default_timezone_set('Asia/Jakarta');
+        return (new KuliExport())->download('kuli' . date('dMY') . '.xlsx');
     }
 
     /**
