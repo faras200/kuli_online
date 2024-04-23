@@ -1,4 +1,4 @@
-<table>
+<table id="customers" class="datatables" width="100%">
     <thead>
         <tr>
             <th>No</th>
@@ -17,7 +17,7 @@
                 <td>{{ $tran->name }}</td>
                 <td>'{{ $tran->identity_card_number }}</td>
                 <td>{{ $tran->wilayahname }}</td>
-                <
+                
             </tr>
         @endforeach
         
