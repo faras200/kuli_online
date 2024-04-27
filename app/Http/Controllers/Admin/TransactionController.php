@@ -198,6 +198,7 @@ class TransactionController extends Controller
         DB::table('transactions')->where('id', $data['id'])->update([
             'tanggal'       => $data['tanggal'],
             'total_salary'        => $data['salary'],
+            'category'        => $data['category'],
             'updated_at'    => now(),
         ]);
 

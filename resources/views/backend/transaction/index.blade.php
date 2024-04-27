@@ -752,7 +752,7 @@
                             success: function(data) {
                                 swal({
                                     title: "Berhasil",
-                                    text: "Data sudah berhasil Di Simpan!",
+                                    text: "Data sudah berhasil Di Update!",
                                     icon: "success",
                                     buttons: false,
                                     timer: 1000,
