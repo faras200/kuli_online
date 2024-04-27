@@ -560,17 +560,12 @@
                         $('#editupah').val(formatRupiah1(response[0].total_salary));
                         $('#edittanggal').val(response[0].tanggal);
                         $('#editid').val(response[0].id);
-                        if (response[0].category == 'beras') {
-
-                        }
                         $('#editcategorykuli').html(
                             ' <option ' + (response[0].category == 'beras' ? 'selected' : '') +
                             ' value="beras">Kuli Beras</option><option ' + (response[0].category == 'padi' ?
                                 'selected' : '') +
-                            ' value="padi">Kuli Padi</option><option ' + (response[0].category == 'pelet' ?
-                                'selected' : '') + ' value="pelet">Kuli Pelet</option><option ' + (response[0]
-                                .category == 'sekam' ?
-                                'selected' : '') + ' value="sekam">Kuli Sekam</option>'
+                            ' value="padi">Kuli Padi</option><option ' + (response[0].category == 'peletsekam' ?
+                                'selected' : '') + ' value="peletsekam">Kuli Pelet/Sekam</option>'
                         );
 
                         $.each(response, function(index, data) {
