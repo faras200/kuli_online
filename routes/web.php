@@ -7,6 +7,7 @@ use App\Http\Controllers\RegionController;
 use App\Http\Controllers\Admin\TagController;
 
 use App\Http\Controllers\Admin\KuliController;
+use App\Http\Controllers\Admin\SummaryController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ImageUploadController;
@@ -47,6 +48,7 @@ Route::middleware(['auth', 'role:admin|author'])->prefix('admin')->group(functio
     Route::post('transactions/update', [TransactionController::class, 'update'])->name('transactions.update');
     Route::get('kuli/print-excel', [KuliController::class, 'export'])->name('kuli.export');
     Route::resource('kuli', KuliController::class);
+    Route::resource('summary', SummaryController::class);
 
     Route::prefix('configuration')->group(function () {
         Route::resource('users', UserController::class);

@@ -21,16 +21,16 @@ use Yajra\DataTables\Facades\DataTables;
 use Auth;
 use DB;
 
-class KuliController extends Controller
+class SummaryController extends Controller
 {
     protected $module;
 
     public function __construct()
     {
-        $this->module = 'Kuli';
+        $this->module = 'Summary';
         $this->middleware([
             'role:author|admin',
-            'permission:index admin/kuli|create admin/kuli/create|store admin/kuli/store|edit admin/kuli/edit|update admin/kuli/update|delete admin/kuli/delete|show admin/kuli/show'
+            'permission:index admin/summary|create admin/summary/create|store admin/summary/store|edit admin/summary/edit|update admin/summary/update|delete admin/summary/delete|show admin/summary/show'
         ]);
     }
 
@@ -40,40 +40,41 @@ class KuliController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
+        // Jika request adalah AJAX untuk DataTables
         if ($request->ajax()) {
-            $data = User::where("wilayah_id", $user->wilayah_id)->orderBy("id", "desc");
-            return Datatables::of($data)
+            $data = User::select(
+                'users.id',
+                'users.name',
+                'users.identity_card_number',
+                \DB::raw('MIN(transactions.tanggal) as first_transaction_date'),
+                \DB::raw('DATEDIFF(NOW(), MIN(transactions.tanggal)) as days_since_first_transaction')
+            )
+            ->join('transaction_details', 'users.id', '=', 'transaction_details.kuli_id')
+            ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+            ->where('transactions.wilayah_id', $user->wilayah_id)
+            ->groupBy('users.id', 'users.name', 'users.identity_card_number'); // Perbaiki groupBy
+
+            return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('DT_RowIndex', function ($row) {
                     return $row->id;
                 })
-                ->addColumn('roles', function ($row) {
-                    return $row->roles->pluck('name')->implode(', ');
-                })
-                ->addColumn('action', function ($row) {
-                    $btn = '
-                    <form action="' . route('kuli.destroy', $row->id) . '" method="POST" class="d-inline delete-data">
-                        ' . method_field('DELETE') . csrf_field() . '
-                        <div class="btn-group">
-                            <a href="' . route('kuli.edit', $row->id) . '" class="btn btn-warning">
-                                <i class="fa fa-pencil-alt"></i>
-                            </a>
-                            <button type="submit" class="btn btn-danger" title="Delete">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
-                    </form>';
-                    return $btn;
-                })
-                ->rawColumns(['action'])
                 ->make(true);
         }
 
+        // Set default rentang tanggal
+        $hariini = date('Y-m-d');
+        $blnawal = date('Y-m-01', strtotime($hariini));
+        $blnakhir = date('Y-m-t', strtotime($hariini));
+
         $data = [
-            'page_title'    => 'Kuli',
+            'page_title' => 'Kuli',
+            'blnawal'    => $blnawal,
+            'blnakhir'   => $blnakhir
         ];
 
-        return view('backend.kuli.index', $data);
+        return view('backend.summary.index', $data);
     }
 
     /**
