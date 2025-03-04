@@ -4,7 +4,8 @@
             <th>No</th>
             <th>Nama</th>
             <th>NIK</th>
-            <th>LOKASI</th>
+            <th>Tanggal Transaksi Pertama</th>
+            <th>Banyaknya Hari</th>
         </tr>
 
     </thead>
@@ -17,7 +18,8 @@
                 <td>{{ $tran->name }}</td>
                 <td>'{{ $tran->identity_card_number }}</td>
                 <td>{{ $tran->wilayahname }}</td>
-                
+                <td>{{ $tran->first_transaction_date }}</td>
+                <td>{{ $tran->days_since_first_transaction }}</td>
             </tr>
         @endforeach
         
