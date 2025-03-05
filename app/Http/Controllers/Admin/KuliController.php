@@ -121,7 +121,7 @@ class KuliController extends Controller
     {
 
         date_default_timezone_set('Asia/Jakarta');
-        return (new KuliExport())->download('kuli' . date('dMY') . '.xlsx');
+        return (new KuliExport($request->dari))->download('kuli' . date('dMY') . '.xlsx');
     }
 
     /**

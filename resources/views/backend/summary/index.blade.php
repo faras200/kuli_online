@@ -22,7 +22,7 @@
         <div class="card-header">
         <div class="row">
                 <div class="col-12 d-flex justify-content-between">
-                    <div class="col-6 d-flex align-items-center">
+                    <div class="col-8 d-flex align-items-center">
                         
                         <button id="cetakexcel" type="button" class="btn btn-success mr-2">
                             <i class="fa fa-print"></i>
@@ -30,16 +30,14 @@
                         </button>
 
                     </div>
-                    <!-- <div class="col-6 d-flex justify-content-between">
-                        <div class="col-6">
+                    <div class="col-4 d-flex justify-content-between">
+                        <div class="col-12">
                             <label>Dari Tanggal :</label>
                             <input type="date" class="form-control" value="{{ $blnawal }}" id="dari">
+                            <input type="hidden" class="form-control" value="{{ $blnakhir }}" id="sampai">
                         </div>
-                        <div class="col-6">
-                            <label>Sampai Tanggal :</label>
-                            <input type="date" class="form-control" value="{{ $blnakhir }}" id="sampai">
-                        </div>
-                    </div> -->
+                        
+                    </div>
                 </div>
 
             </div>
@@ -54,8 +52,9 @@
                         <th>No.</th>
                         <th>Name</th>    
                         <th>NIK</th>
-                        <th>Tanggal Transaksi Pertama</th>
+                        <th>Tanggal Masuk Pertama</th>
                         <th>Banyaknya Hari</th>
+                        <th>Tanggal Terakhir</th>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -70,6 +69,9 @@
     <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script type="text/javascript">
+
+        var table;
+
         $(document).ready(function() {
             var table = $('#dataTable').DataTable({
                 processing: true,
@@ -102,7 +104,19 @@
                             return '-';
                         }
                     },
-                    { data: 'days_since_first_transaction', name: 'days_since_first_transaction' }
+                    { data: 'days_since_first_transaction', name: 'days_since_first_transaction' },
+                    { 
+                        data: 'last_transaction_date', 
+                        name: 'last_transaction_date',
+                        render: function(data, type, row) {
+                            if (data) {
+                                var date = new Date(data);
+                                var options = { day: '2-digit', month: 'short', year: 'numeric' };
+                                return date.toLocaleDateString('id-ID', options);
+                            }
+                            return '-';
+                        }
+                    },
                 ],
                 order: [[0, 'desc']],
                 oLanguage: {
@@ -132,9 +146,15 @@
                 table.ajax.reload(null, false);
             }
 
+            $('#dari').on('change', function() {
+                table.ajax.reload();
+            });
+
             // Tombol cetak Excel
+
             $("#cetakexcel").click(() => {
-                window.location.href = `/admin/kuli/print-excel`;
+                const dari = $('#dari').val();
+                window.location.href = `/admin/kuli/print-excel?dari=${dari}`;
             });
         });
     </script>

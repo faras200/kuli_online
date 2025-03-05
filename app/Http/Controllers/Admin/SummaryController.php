@@ -48,12 +48,17 @@ class SummaryController extends Controller
                 'users.name',
                 'users.identity_card_number',
                 \DB::raw('MIN(transactions.tanggal) as first_transaction_date'),
+                \DB::raw('MAX(transactions.tanggal) as last_transaction_date'),
                 \DB::raw('DATEDIFF(NOW(), MIN(transactions.tanggal)) as days_since_first_transaction')
             )
             ->join('transaction_details', 'users.id', '=', 'transaction_details.kuli_id')
             ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
             ->where('transactions.wilayah_id', $user->wilayah_id)
-            ->groupBy('users.id', 'users.name', 'users.identity_card_number'); // Perbaiki groupBy
+            ->groupBy('users.id', 'users.name', 'users.identity_card_number');
+
+            if ($request->has('dari') && $request->has('sampai')) {
+                $data->whereBetween('transactions.tanggal', [$request->dari, $request->sampai]);
+            }
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -65,8 +70,8 @@ class SummaryController extends Controller
 
         // Set default rentang tanggal
         $hariini = date('Y-m-d');
-        $blnawal = date('Y-m-01', strtotime($hariini));
-        $blnakhir = date('Y-m-t', strtotime($hariini));
+        $blnawal = '2024-03-25';
+        $blnakhir = $hariini;
 
         $data = [
             'page_title' => 'Kuli',
