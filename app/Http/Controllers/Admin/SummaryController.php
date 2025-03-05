@@ -49,7 +49,7 @@ class SummaryController extends Controller
                 'users.identity_card_number',
                 \DB::raw('MIN(transactions.tanggal) as first_transaction_date'),
                 \DB::raw('MAX(transactions.tanggal) as last_transaction_date'),
-                \DB::raw('DATEDIFF(NOW(), MIN(transactions.tanggal)) as days_since_first_transaction')
+                \DB::raw('COUNT(DISTINCT transactions.tanggal) as days_since_first_transaction')
             )
             ->join('transaction_details', 'users.id', '=', 'transaction_details.kuli_id')
             ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
@@ -61,11 +61,18 @@ class SummaryController extends Controller
             }
 
             return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('DT_RowIndex', function ($row) {
-                    return $row->id;
-                })
-                ->make(true);
+            ->filter(function ($query) use ($request) {
+                if ($request->has('search') && !empty($request->input('search')['value'])) {
+                    $searchValue = $request->input('search')['value'];
+                    $query->where('users.name', 'like', "%{$searchValue}%");
+                }
+            })
+            ->addIndexColumn()
+            ->addColumn('DT_RowIndex', function ($row) {
+                return $row->id;
+            })
+            ->make(true);
+
         }
 
         // Set default rentang tanggal

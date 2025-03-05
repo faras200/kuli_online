@@ -32,7 +32,7 @@ class KuliExport implements FromView
             'users.identity_card_number',
             \DB::raw('MIN(transactions.tanggal) as first_transaction_date'),
             \DB::raw('MAX(transactions.tanggal) as last_transaction_date'),
-            \DB::raw('DATEDIFF(NOW(), MIN(transactions.tanggal)) as days_since_first_transaction')
+            \DB::raw('COUNT(DISTINCT transactions.tanggal) as days_since_first_transaction')
         )
         ->join('transaction_details', 'users.id', '=', 'transaction_details.kuli_id')
         ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
